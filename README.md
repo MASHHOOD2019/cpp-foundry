@@ -27,16 +27,3 @@ OOP (3 credits) - Marks: 82, Points: 3.33
 ...
 Semester GPA: 2.88667
 ```
-
-## Day 2 - Probation Checker (Python)
-
-`day-02-probation-checker/probation_checker.py`
-
-Enter your Semester 2 marks for the 7 courses, it prints your semester GPA
-and your new CGPA, and tells you if you clear 2nd probation (needs 2.00).
-
-How to run:
-
-```
-python3 probation_checker.py
-```
