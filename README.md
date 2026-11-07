@@ -35,6 +35,10 @@ Semester GPA: 2.88667
 Given an array of numbers and a target, find the two numbers that add up
 to the target and return their positions. Classic interview problem.
 
+Solved in one pass with a hash map: for each number, check if
+(target - number) was already seen. Time O(n), space O(n).
+The brute-force double loop is O(n^2).
+
 How to run:
 
 ```

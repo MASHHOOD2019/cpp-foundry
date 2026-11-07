@@ -4,39 +4,43 @@
 // that add up to the target and return their positions.
 // Example: nums = [2, 7, 11, 15], target = 9 -> [0, 1]
 // because 2 + 7 = 9.
+//
+// Approach: one pass with a hash map. For each number, check if
+// (target - number) was already seen. If yes, we have the pair.
+// Time: O(n), Space: O(n). The brute-force double loop is O(n^2).
 
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 using namespace std;
 
-vector<int> twoSum(vector<int> nums, int target)
+class Solution
 {
-    vector<int> answer;
-    for (int i = 0; i < nums.size(); i++)
+public:
+    vector<int> twoSum(vector<int> &nums, int target)
     {
-        for (int j = i + 1; j < nums.size(); j++)
+        unordered_map<int, int> seen;
+        int n = nums.size();
+        for (int i = 0; i < n; i++)
         {
-            if (nums[i] + nums[j] == target)
+            int needed = target - nums[i];
+            if (seen.find(needed) != seen.end())
             {
-                answer.push_back(i);
-                answer.push_back(j);
-                return answer;
+                return {seen[needed], i};
             }
+            seen[nums[i]] = i;
         }
+        return {};
     }
-    return answer;
-}
+};
 
 int main()
 {
-    vector<int> nums;
-    nums.push_back(2);
-    nums.push_back(7);
-    nums.push_back(11);
-    nums.push_back(15);
+    Solution sol;
+    vector<int> nums = {2, 7, 11, 15};
     int target = 9;
 
-    vector<int> result = twoSum(nums, target);
+    vector<int> result = sol.twoSum(nums, target);
 
     if (result.size() == 2)
     {
