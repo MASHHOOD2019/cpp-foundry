@@ -27,3 +27,24 @@ OOP (3 credits) - Marks: 82, Points: 3.33
 ...
 Semester GPA: 2.88667
 ```
+
+## Day 3 - Two Sum (C++)
+
+`day-03-two-sum/two_sum.cpp`
+
+Given an array of numbers and a target, find the two numbers that add up
+to the target and return their positions. Classic interview problem.
+
+How to run:
+
+```
+g++ two_sum.cpp -o two_sum
+./two_sum
+```
+
+Example:
+
+```
+Positions: 0 and 1
+Numbers: 2 + 7 = 9
+```
