@@ -52,3 +52,31 @@ Example:
 Positions: 0 and 1
 Numbers: 2 + 7 = 9
 ```
+
+## Day 5 - LRU Cache (C++)
+
+`day-05-lru-cache/lru_cache.cpp`
+
+A fixed-capacity cache that evicts the least recently used item.
+Classic interview and systems problem.
+
+Solved with a doubly linked list for use order plus a hash map
+pointing at each node, so get and put both run in O(1) time.
+Space O(capacity).
+
+How to run:
+
+```
+g++ lru_cache.cpp -o lru_cache
+./lru_cache
+```
+
+Example:
+
+```
+get(1): 1
+get(2): -1
+get(1): -1
+get(3): 3
+get(4): 4
+```
