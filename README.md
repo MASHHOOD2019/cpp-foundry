@@ -80,3 +80,40 @@ get(1): -1
 get(3): 3
 get(4): 4
 ```
+
+## Day 7 - Token Bucket Rate Limiter (C++)
+
+`day-07-rate-limiter/rate_limiter.cpp`
+
+Limits how many requests a caller may make in a time window.
+The bucket holds tokens, refills at a fixed rate, and each
+request spends one token. Requests with an empty bucket are
+rejected instead of queued, so a burst can never overwhelm
+the service behind it. This is the limiter behind most API
+gateways.
+
+Solved with lazy refill from the elapsed wall-clock time, so
+there is no background thread and no timer. A mutex guards
+the token count, so the limiter is safe to share across
+threads. Time O(1) per request, space O(1).
+
+How to run:
+
+```
+g++ -std=c++17 -pthread rate_limiter.cpp -o rate_limiter
+./rate_limiter
+```
+
+Example:
+
+```
+Burst of 8 requests (capacity 5, refill 2/s):
+  request 1: allowed
+  ...
+  request 6: rejected
+After waiting 1s, tokens available: 2
+  request 9: allowed
+  request 10: allowed
+  request 11: rejected
+40 concurrent requests on a 10-token bucket: 10 allowed
+```
