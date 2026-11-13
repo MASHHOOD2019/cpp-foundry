@@ -117,3 +117,38 @@ After waiting 1s, tokens available: 2
   request 11: rejected
 40 concurrent requests on a 10-token bucket: 10 allowed
 ```
+
+## Day 9 - Thread Pool (C++)
+
+`day-09-thread-pool/thread_pool.cpp`
+
+A fixed pool of worker threads that runs submitted tasks in
+parallel. Instead of spawning a thread per job, the pool
+reuses a small set of threads and hands them work from a
+shared queue. This is the pattern behind every web server,
+game engine and job queue.
+
+Workers wait on a condition variable and wake when a task
+arrives. submit() wraps any callable in a packaged_task and
+returns a std::future, so the caller collects the result (or
+the exception) later. The destructor stops the queue, drains
+the remaining tasks and joins every worker, so no task is
+dropped and no thread is left running. Time O(1) amortized
+per submit, space O(queued tasks).
+
+How to run:
+
+```
+g++ -std=c++17 -pthread thread_pool.cpp -o thread_pool
+./thread_pool
+```
+
+Example:
+
+```
+Parallel sum 1..1000000: 500000500000 (expected 500000500000) -> OK
+Sum of squares 0..99: 328350 (expected 328350) -> OK
+Exception test: caught "task failed on purpose" -> OK
+Shutdown drain: 5 queued tasks completed, sum 15 (expected 15) -> OK
+All checks passed.
+```
