@@ -152,3 +152,45 @@ Exception test: caught "task failed on purpose" -> OK
 Shutdown drain: 5 queued tasks completed, sum 15 (expected 15) -> OK
 All checks passed.
 ```
+
+## Day 11 - Memory Pool (C++)
+
+`day-11-memory-pool/memory_pool.cpp`
+
+A fixed-size block allocator. Instead of calling new/delete
+for thousands of small, same-sized objects (slow, and it
+fragments the heap), the pool grabs memory in big chunks and
+hands out blocks from a free list. This is the allocator
+behind game engines, network servers and embedded systems:
+predictable, cache-friendly, and fragmentation-free.
+
+Each chunk holds blocks of the same size, aligned for any
+type. Free blocks form an intrusive linked list, so allocate()
+pops the head and deallocate() pushes a block back, both in
+O(1) time with no extra bookkeeping memory. When the free
+list is empty, a new chunk is added. A mutex guards the free
+list, so the pool is safe to share across threads, and
+deallocate() ignores foreign or null pointers instead of
+corrupting the list. Time O(1) allocate / deallocate,
+space O(blocks in use).
+
+How to run:
+
+```
+g++ -std=c++17 -pthread memory_pool.cpp -o memory_pool
+./memory_pool
+```
+
+Example:
+
+```
+100 allocations, sum 0..99: OK
+grew past one chunk: OK
+used blocks counted: OK
+50 blocks freed: OK
+50 reallocations reuse freed blocks: OK
+foreign/null deallocate ignored: OK
+256-byte blocks, 40 allocs over 3 chunks: OK
+all big blocks returned: OK
+All checks passed.
+```
