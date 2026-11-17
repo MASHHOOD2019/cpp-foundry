@@ -194,3 +194,49 @@ foreign/null deallocate ignored: OK
 all big blocks returned: OK
 All checks passed.
 ```
+
+## Day 13 - Bloom Filter (C++)
+
+`day-13-bloom-filter/bloom_filter.cpp`
+
+A Bloom filter answers "definitely not in the set" or "probably in
+the set" using only a few bits per element. Databases (Cassandra,
+RocksDB), caches and browsers use it to skip expensive disk or
+network lookups: a miss is guaranteed correct, a hit just means
+"check for real". It never produces a false negative, only a small,
+tunable false-positive rate.
+
+The k bit positions for an item come from double hashing:
+h(i) = (h1 + i*h2) mod m, so only two real hashes are needed (FNV-1a
+plus SplitMix64 of it). Given the expected element count n and a
+target false-positive rate p, the filter sizes itself with the
+optimal m = -(n ln p) / (ln 2)^2 bits and k = (m / n) ln 2 hashes.
+It also supports union (bitwise OR of two filters with the same
+shape) and serialisation to bytes, so it can be saved to disk or
+sent over the network, and a mutex makes it safe to share across
+threads. Time O(k) add / contains, space O(m) bits (about 10 bits
+per element at a 1% false-positive rate).
+
+How to run:
+
+```
+g++ -std=c++17 -pthread bloom_filter.cpp -o bloom_filter
+./bloom_filter
+```
+
+Example:
+
+```
+filter for 10000 items at 1% fp rate: 95851 bits (11981 bytes), 7 hashes
+no false negatives on 10000 inserted keys: OK
+false positives on 10000 absent keys: 110 (1.1%)
+false-positive rate under 3%: OK
+estimated false-positive rate: 1.0039%
+estimated rate under 3%: OK
+absent key reported absent: OK
+some bits set, not all: OK
+serialise/deserialise round-trip keeps membership: OK
+union contains both sets: OK
+merging mismatched filters throws: OK
+All checks passed.
+```
